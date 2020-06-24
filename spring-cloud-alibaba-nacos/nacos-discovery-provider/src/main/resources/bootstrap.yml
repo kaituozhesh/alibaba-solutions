@@ -1,0 +1,9 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: nacos-discovery-provider
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.41.132:8848
