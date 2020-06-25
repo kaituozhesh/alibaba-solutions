@@ -1,0 +1,9 @@
+server:
+  port: 9101
+spring:
+  application:
+    name: sentinel-rate-limiting
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8080

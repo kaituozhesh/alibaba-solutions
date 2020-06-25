@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>spring-cloud-alibaba-nacos</module>
+        <module>spring-cloud-alibaba-sentinel</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
