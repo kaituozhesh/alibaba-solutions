@@ -8,9 +8,9 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.41.132:8848
+        server-addr: 192.168.159.132:8848
       config:
-        server-addr: 192.168.41.132:8848
+        server-addr: 192.168.159.132:8848
         file-extension: yaml  # 默认为properties
         namespace: d8d91909-49e3-489f-a763-ac1849539f34
 #        prefix: example   对应Nacos中的Data ID前缀  默认获取${spring.application.name}

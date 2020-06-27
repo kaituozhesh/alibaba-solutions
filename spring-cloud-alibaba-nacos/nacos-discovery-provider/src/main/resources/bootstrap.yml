@@ -6,4 +6,4 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.41.132:8848
+        server-addr: 192.168.159.132:8848
