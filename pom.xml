@@ -11,6 +11,8 @@
     <modules>
         <module>spring-cloud-alibaba-nacos</module>
         <module>spring-cloud-alibaba-sentinel</module>
+        <module>spring-cloud-gateway</module>
+        <module>spring-cloud-service</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -19,6 +21,13 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.2</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -1,0 +1,12 @@
+server:
+  port: 9201
+spring:
+  cloud:
+    # Spring Cloud Gateway 配置项，对应GatewayProperties类
+    gateway:
+      # 路由配置项，对应RouteDefinition数组
+      routes:
+        - id: path_route
+          uri: http://localhost:8201/user/{id}
+          predicates:
+            - Path=/user/{id}
