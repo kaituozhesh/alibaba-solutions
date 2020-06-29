@@ -4,9 +4,56 @@ spring:
   cloud:
     # Spring Cloud Gateway 配置项，对应GatewayProperties类
     gateway:
+      discovery:
+        locator:
+          enabled: true # 设置与服务注册发现组件结合，这样可以采用服务名的路由策略
       # 路由配置项，对应RouteDefinition数组
       routes:
         - id: path_route
-          uri: http://localhost:8201/user/{id}
+          uri: http://localhost:8201 # 最终路由到的目标地址
           predicates:
-            - Path=/user/{id}
+            - Path=/user/{id} # 当访问：`http://localhost:9201/user/1`时就会被自动转发到`http://localhost:8201/user/1` 这里需要完全匹配Path的值时才会进行路由转发
+            - Before=2019-05-01T00:00:00+08:00[Asia/Shanghai] # 允许2019-05-01日凌晨之前的路由转发到http://localhost:8201
+            - After=2019-04-29T00:00:00+08:00[Asia/Shanghai] # 允许2019-04-29凌晨之后进行转发到http://localhost:8201
+            - Between=2019-04-29T00:00:00+08:00[Asia/Shanghai], 2019-05-01T00:00:00+08:00[Asia/Shanghai] # 允许在2019-04-29日凌晨后 & 2019-05-01凌晨之前请求转发到http://localhost:8201
+            - Cookie=username,admin # 如果客户端发送请求时携带了"username=admin"的Cookie信息，则允许请求转发。
+            - Header=X-Request-Id, \d+ # 带有指定请求头的请求会匹配该路由X-Request-Id:123
+            - Host=**.ktz.com # 带有指定host的请求会匹配该路由 Host:www.ktz.com
+            - Method=POST # 发送指定方式的请求会匹配该路由
+            - Query=username # 带有指定查询参数的请求会匹配该路由
+            - Query=xxx, zzz # 参数`xxx`必须为`zzz`时才会被成功转发
+            - RemoteAddr=192.168.1.1/24 # 从指定远程地址发起的请求可以匹配该路由
+          filters: # 过滤器允许以某种方式修改传入的HTTP请求或返回的HTTP响应
+            - AddRequestHeader=X-Request-Foo, Bar # 对于所有匹配的请求，这将向下游请求的头中添加x-request-foo:bar 的header
+            - AddRequestParameter=foo,bar  # 对于所有匹配的请求， 添加foo=bar的请求参数
+            - AddResponseHeader=X-Response-Foo, Bar # 将x-response-foo:bar头添加到下游响应的header中
+            - StripPrefix=2 # 对指定数量的路径前缀进行去除的过滤器 http://localhost:9201/user-service/a/user/1相当于http://localhost:8201/user/1
+            - PrefixPath=/user  # 对所有请求增加前缀   http://localhost:9201/1 -> http://localhost:8201/user/1
+            - PreserveHostHeader # 该filter没有参数。设置了该filter后，GatewayFilter将不适用由Http客户端确定的host header 而是发送原始的host header
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10 # 允许用户每秒执行多少请求
+                redis-rate-limiter.burstCapacity: 20 # 允许用户在一秒钟内执行的最大请求数  可通过设置burstCapacity高于replenishRate来允许临时突发流浪
+            - RemoveRequestHeader=X-Request-Foo # 删除请求中的x-request-foo参数
+            - RemoveResponseHeader=X-Request-Foo # 这将在返回网关client之前从响应中删除x-response-foo头
+            - RewritePath=/foo/(?<segment>.*), /$\{segment} # 对于请求/foo/bar 将在发出下游请求之前将路径设置为/bar， yaml规范：使用$\替换$
+            - name: RequestSize
+              args:
+                maxSize: 5000000 # 请求允许大小限制（单位字节） 默认大小为5MB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
